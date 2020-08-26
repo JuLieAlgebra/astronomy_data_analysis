@@ -14,8 +14,10 @@ def build_kd_tree(catalog, depth=0):
     Recursive algorithm to build a k-d tree from catalog
     K-d tree is stored in a nested dictionary.
 
-    catalog: 2D numpy array
-    catalog[i] = [RA, DEC, ID]
+    Parameters
+    ----------
+    catalog: 2D numpy array. Ex: catalog[i] = [RA, DEC, ID]. See cross_matching_tools.load_bss, load_cosmos
+    depth: int, for recursion.
     """
     n = len(catalog)
 
@@ -38,6 +40,8 @@ def closer_star(root, s1, s2):
     Helper function for find_closest_star.
     Given three k-d tree nodes, returns closest star to root.
 
+    Parameters
+    ----------
     Root: element of kd tree
     s1: element of kd tree
     s1: element of kd tree
@@ -63,6 +67,8 @@ def find_closest_star(root, star, depth=0):
     For one star, recursively finds closest match in entire k-d tree-ized catalog.
     Returns element of kd tree
 
+    Parameters
+    ----------
     Root: element of kd tree
     Star: element of kd tree
     """
@@ -103,8 +109,10 @@ def crossmatch(catalog1, catalog2, max_dist):
     matches includes the IDs of the two stars from each catalog and the distance between
     them.
 
-    catalog 1, 2: 2D numpy arrays
-    max_dist: tolerance for matching stars in radians
+    Parameters
+    ----------
+    catalog 1, 2: 2D numpy arrays. See cross_matching_tools.load_bss, load_cosmos
+    max_dist: float, tolerance for matching stars in radians
     """
     tree = build_kd_tree(catalog2)
     matches = []

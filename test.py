@@ -4,32 +4,36 @@ Proper mess, but some examples.
 TODO: Clean up
 """
 import sys # to read in command line arguments
-import astronomy_data_analysis as ada
-
 import scipy.spatial
 import numpy as np
 import time
+import astronomy_data_analysis as ada
 
 # user can provide the path to fits files via the command line or by changing the variable path below
-path = '/home/bacon/code/datasets/astronomy_data/pulsar images/'
 if len(sys.argv) > 1:
-     fits_file = sys.argv[1]
+    path = sys.argv[1]
 else:
-     fits_file = path + '0000.fits'
+    path = '/home/bacon/code/datasets/astronomy_data/pulsar images/'
 
 
-# some examples from image_stacking
-image = ada.image_stacking.get_fits_data(fits_file)
-ada.image_stacking.plot(image)
-
-
+# our list of fits file paths of our pulsar images
 file_list = [path + '000{0}.fits'.format(i) for i in range(0, 9)]
-mean = ada.image_stacking.mean_fits(file_list)
-ada.image_stacking.plot(mean)
+image_list = ada.fits_tools.get_data_stack(file_list)
+ada.fits_tools.plot_images(image_list, title="Pulsar Images")
+
+
+# demonstrating that the space efficient mean (scalable mean) and mean produce identical results
+space_mean = ada.image_stacking.scalable_mean_fits(image_list)
+mean = ada.image_stacking.mean_fits(image_list)
+assert np.all(np.isclose(space_mean, mean))
+
+
+# demonstrating another function from image_stacking
 locations = []
-for file in file_list:
-     brightest = ada.image_stacking.brightest_pixel(image)
-     locations.append(brightest)
+for image in image_list:
+    brightest = ada.image_stacking.brightest_pixel(image)
+    locations.append(brightest)
+print("Locations of the brightest pixels: ", locations)
 
 
 # some examples from naive_cross_matching
