@@ -1,10 +1,12 @@
 """
-Here we only have functions used for image stacking.
+Some functions used for image stacking - including scalable mean and median algorithms
+for large data sets.
 """
 import numpy as np
 from astropy.io import fits
 from . import fits_tools
 import matplotlib.pyplot as plt
+
 
 def mean_fits(data_stack):
     """
@@ -18,20 +20,16 @@ def mean_fits(data_stack):
     return np.mean(data_stack, axis=0)
 
 
-def scalable_mean_fits(data_stack):
+def std_fits(data_stack):
     """
-    A mean function that only needs to load one image into memory at a time.
+    Returns the std value across the same element in each fits files.
+    Return has the same shape as one image in data_stack.
 
     Parameters
     ----------
     data_stack: 3D numpy array of fits image data. See fits_tools.get_data_stack.
     """
-    hist = np.zeros(data_stack[0].shape)
-    for image in data_stack:
-        hist += image
-
-    mean = hist / len(data_stack)
-    return mean
+    return np.std(data_stack, axis=0)
 
 
 def median_fits(data_stack):
@@ -46,39 +44,64 @@ def median_fits(data_stack):
     return np.median(data_stack, axis=0)
 
 
-def scalable_median_fits(data_stack, num_bins=5):
+def scalable_stats_fits(file_list):
     """
-    Implements numpythonic binapprox algorithm
-    For more details: http://www.stat.cmu.edu/~ryantibs/median/
+    A naive mean, standard deviation function that only needs to load one image into memory at a time.
 
-    TODO fix the data stack stuff, use scalable mean and std for computing stats in hist
+    TODO: implement Welford's method instead, which will have much more numeric stability as the number
+    of images increases dramatically. However, for less than ~ a quarter million images, this naive
+    implementation will still do just fine.
 
     Parameters
     ----------
-    file_list: blad
-    num_bins: int
-
+    file_list: list of string fits filenames
     """
-    mean, std, left_bins, bins = median_histogram(data_stack, num_bins)
-    mid = (len(data_stack) + 1) / 2 # we only want to count until we've reached the median value
+    dim = fits_tools.get_fits_data(file_list[0]).shape
+    hist = np.zeros(dim)
+    sq_hist = np.zeros(dim)
+
+    for file in file_list:
+        data = fits_tools.get_fits_data(file)
+        hist += data
+        sq_hist += data * data
+
+    mean = hist / len(file_list)
+    std = np.sqrt(sq_hist / len(file_list) - mean * mean)
+    return mean, std
+
+
+def scalable_median_fits(file_list, num_bins=5):
+    """
+    Implements numpythonic binapprox algorithm, which runs in O(number of images).
+    For more details: http://www.stat.cmu.edu/~ryantibs/median/
+
+    Parameters
+    ----------
+    file_list: list of string fits filenames
+    num_bins: int
+    """
+    mean, std, left_bins, bins = median_histogram(file_list, num_bins)
+    midpoint = (len(file_list) + 1) / 2 # we only want to count until we've reached the median value
 
     bin_width = 2 * std / num_bins
 
-    cumsumm = np.cumsum(np.dstack((left_bins, bins)), axis=2)
-    b = np.argmax(cumsumm >= mid, axis=2) - 1
+    # All the heavy duty lifting happens in these two lines!
+    cumsumm = np.cumsum(np.dstack((left_bins, bins)), axis=2) # we want to integrate our histogram until we reach the median value
+    b = np.argmax(cumsumm >= midpoint, axis=2) - 1 # argmax returns the first instance of true it finds
 
+    # once we've found the bins in the histograms with the median values in it, compute median
     median = mean - std + bin_width*(b + 0.5)
     return median
 
 
-def median_histogram(data_stack, num_bins=5):
+def median_histogram(file_list, num_bins=5):
     """
     Constructs the histogram for scalable_median_fits. End result will have a histogram for
     each "pixel" of the fits image.
 
     Parameters
     ----------
-    file_list: blad
+    file_list: list of string fits filenames
     num_bins: int
 
 
@@ -89,18 +112,20 @@ def median_histogram(data_stack, num_bins=5):
     left_bins: 2D numpy array with dimensions = input image. Number of pixels who were more than 1 std from mean.
     bins:   3D numpy array with dimensions = (input image shape, num_bins). Histogram.
     """
-    mean = mean_fits(data_stack)
-    std = np.std(data_stack, axis=0)
+    mean, std = scalable_stats_fits(file_list)
 
     minval = mean - std
     maxval = mean + std
     bin_width = 2 * std / num_bins
 
-    bins = np.zeros((data_stack[0].shape[0], data_stack[0].shape[1], num_bins)) # , dtype=int TODO think about this
+    image_dim = fits_tools.get_fits_data(file_list[0]).shape
+    bins = np.zeros((image_dim[0], image_dim[1], num_bins)) # , dtype=int TODO think about this
     # we are going to count the number of times we see a value less than mean - std.
-    left_bins = np.zeros(data_stack[0].shape)
+    left_bins = np.zeros(image_dim)
 
-    for i, data in enumerate(data_stack):
+    for i, file in enumerate(file_list):
+        data = fits_tools.get_fits_data(file)
+
         low_values = (data < minval)
         left_bins[low_values] +=1
 

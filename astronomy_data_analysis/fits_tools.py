@@ -78,7 +78,7 @@ def plot(image, title=None):
     plt.show()
 
 
-def plot_images(data_stack, title='', ncols=4):
+def plot_images(data_stack, title='', ncols=4, subtitles=None):
     """
     Takes in a data stack. See fits_tools.get_data_stack.
     Plots all fits data in same figure.
@@ -87,6 +87,7 @@ def plot_images(data_stack, title='', ncols=4):
     ----------
     data_stack: 3D numpy array
     ncols: int, optional
+    subtitles: list of strings, with subtitle for each image
 
     TODO: Make nicer.
     """
@@ -99,6 +100,8 @@ def plot_images(data_stack, title='', ncols=4):
         # axi is equivalent with ax[rowid][colid]
         if i < data_stack.shape[0]:
             axi.imshow(data_stack[i])
+            if subtitles:
+                axi.title.set_text(subtitles[i])
 
     fig.suptitle(title)
     plt.tight_layout(True)

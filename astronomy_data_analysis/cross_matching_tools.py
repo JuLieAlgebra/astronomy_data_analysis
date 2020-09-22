@@ -46,7 +46,7 @@ def load_bss(path):
     path: string to where bss catalog is stored
     """
     if os.path.isfile(path+'bss_catalog.npy'):
-        data = np.load(path + 'bss_catalog.npy')
+        data = np.load(path+'bss_catalog.npy')
 
     else:
         raw_data = np.genfromtxt(path+'bss.dat', usecols=range(1, 7))
@@ -77,7 +77,7 @@ def load_cosmos(path):
     path: string to where bss catalog is stored
     """
     if os.path.isfile(path+'superCOSMOS_catalog.npy'):
-        data = np.load(path + 'superCOSMOS_catalog.npy')
+        data = np.load(path+'superCOSMOS_catalog.npy')
 
     else:
         raw_data = np.genfromtxt(path+'superCOSMOS.csv', delimiter=',', skip_header=1, usecols=[0, 1])
