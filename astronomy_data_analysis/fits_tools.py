@@ -9,8 +9,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-##### HELPER FUNCTIONS FOR LOADING FITS FILES AND STACKING #####
-
 def get_fits_data(filename):
     """
     Returns image data (2D numpy array) of file
@@ -91,7 +89,7 @@ def plot_images(data_stack, title='', ncols=4, subtitles=None):
 
     TODO: Make nicer.
     """
-    nrows = data_stack.shape[0] // ncols + int(bool(data_stack.shape[0] % ncols)) # array of sub-plots
+    nrows = data_stack.shape[0] // ncols + (data_stack.shape[0] % ncols) # array of sub-plots
     figsize = [6, 8]
     fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize)
 

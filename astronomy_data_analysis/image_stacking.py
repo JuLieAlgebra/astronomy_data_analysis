@@ -109,7 +109,8 @@ def median_histogram(file_list, num_bins=5):
     -------
     mean:   2D numpy array with dimensions = input image. Mean image of all of the data.
     std:    2D numpy array with dimensions = input image. Std of all of the data.
-    left_bins: 2D numpy array with dimensions = input image. Number of pixels who were more than 1 std from mean.
+    left_bins: 2D numpy array with dimensions = input image.
+               Number of pixels who were more than 1 std from mean.
     bins:   3D numpy array with dimensions = (input image shape, num_bins). Histogram.
     """
     mean, std = scalable_stats_fits(file_list)

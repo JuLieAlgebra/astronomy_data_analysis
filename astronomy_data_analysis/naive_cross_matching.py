@@ -20,8 +20,8 @@ def find_closest(data, ra, dec):
     Parameters
     ----------
     data: 2D numpy array of a star catalog. See cross_matching_tools.load_bss, load_cosmos.
-    ra: float, radians
-    dec: float, radians
+    ra:   float, radians
+    dec:  float, radians
     """
     best_match = -1
     closest_dist = np.inf
@@ -47,9 +47,6 @@ def naive_crossmatch(bss, cosmos, max_dist):
     another observation of the object in the second catalog, so we add it to a list of no matches
     and return it too.
 
-    Returns tuple of matches (catalog 1 ID, catalog 2 ID, distance between them) and no matches
-    (catalog 1 ID).
-
     NOTE: catalog ID refers to the index of an object in a catalog (catalog[ID] = object)
 
     Parameters
@@ -57,6 +54,11 @@ def naive_crossmatch(bss, cosmos, max_dist):
     bss: 2D numpy array. See cross_matching_tools.load_bss
     cosmos: 2D numpy array. See cross_matching_tools.load_cosmos
     max_dist: float, radians
+
+    Returns
+    -------
+    matches:    (catalog 1 ID, catalog 2 ID, distance between them)
+    no_matches: (catalog 1 ID)
     """
     matches = []
     no_matches = []

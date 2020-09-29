@@ -17,7 +17,7 @@ def build_kd_tree(catalog, depth=0):
     Parameters
     ----------
     catalog: 2D numpy array. Ex: catalog[i] = [RA, DEC, ID]. See cross_matching_tools.load_bss, load_cosmos
-    depth: int, for recursion.
+    depth:   int, for recursion.
     """
     n = len(catalog)
 
@@ -43,8 +43,8 @@ def closer_star(root, s1, s2):
     Parameters
     ----------
     Root: element of kd tree
-    s1: element of kd tree
-    s1: element of kd tree
+    s1:   element of kd tree
+    s1:   element of kd tree
 
     """
     if s1 is None:
@@ -112,7 +112,13 @@ def crossmatch(catalog1, catalog2, max_dist):
     Parameters
     ----------
     catalog 1, 2: 2D numpy arrays. See cross_matching_tools.load_bss, load_cosmos
-    max_dist: float, tolerance for matching stars in radians
+    max_dist:     float, tolerance for matching stars in radians
+
+
+    Returns
+    -------
+    no_matches: list of tuples, each (ID: int, ID: int, distance between the two: float)
+    matches:    list of tuples, each (ID: int, ID: int, distance between the two: float)
     """
     tree = build_kd_tree(catalog2)
     matches = []

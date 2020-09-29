@@ -13,11 +13,11 @@ def hms2dec(hours, minutes, seconds):
 
     Parameters
     ----------
-    Hours: int
+    Hours:   int
     Minutes: int
     Seconds: float
     """
-    return 15*(hours+minutes/60.0 + seconds/(60.0**2))
+    return 15*(hours + minutes / 60.0 + seconds / (60.0**2))
 
 
 def dms2dec(degrees, minutes, seconds):
@@ -31,7 +31,7 @@ def dms2dec(degrees, minutes, seconds):
     Minutes: int
     Seconds: float
     """
-    return np.sign(degrees) * (abs(degrees) + minutes/60.0 + seconds/(60.0**2))
+    return np.sign(degrees) * (abs(degrees) + minutes / 60.0 + seconds / (60.0**2))
 
 
 def load_bss(path):
