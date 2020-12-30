@@ -98,13 +98,39 @@ def find_closest_star(root, star, depth=0):
     return best
 
 
+def ra_dec_to_cartesian(catalog, r=1.0):
+    """
+    Convert RA, DEC coordinates in radians to 3D Cartesian.
+
+    Note, they will all lie on a sphere of radius 1.0, since RA and DEC are projections
+    of the stars onto the Celestial Sphere. Radius can be set arbitrarily. See readme for more details.
+
+    Used for K-D Tree
+
+    """
+    shape = np.shape(catalog)
+    cartesian_catalog = np.zeros((shape[0], shape[1] + 1))
+    ra = catalog[:, 0]
+    dec = catalog[:, 1]
+
+    cartesian_catalog[:, 0] = r * np.cos(dec) * np.cos(ra)
+    cartesian_catalog[:, 1] = r * np.cos(dec) * np.sin(ra)
+    cartesian_catalog[:, 2] = r * np.sin(dec)
+    cartesian_catalog[:, 3:] = catalog[:, 2:]
+
+    return cartesian_catalog
+
+
 def crossmatch(catalog1, catalog2, max_dist):
     """
-    Finds all of the matches of catalog1 in catalog2 by assuming that entries that are
+    Finds all of the matches of catalog1 in catalog2 with kd-tree nearest neighbor search by assuming that entries that are
     close spatially are the same object in both catalogs.
 
-    no_matches includes the ID of the star without a match and the closet star found
-    by the nearest neighbor search, which was not within max_dist.
+    K-d tree is constructed from catalog2. If catalog2 is smaller than catalog1, in order to avoid over-matching,
+    that convention is swapped.
+
+    no_matches includes the ID of the star without a match, the closest object in catalog 2, and the distance
+    between them. Closest object found by the nearest neighbor search, which was not within max_dist.
 
     matches includes the IDs of the two stars from each catalog and the distance between
     them.
@@ -117,19 +143,29 @@ def crossmatch(catalog1, catalog2, max_dist):
 
     Returns
     -------
-    no_matches: list of tuples, each (ID: int, ID: int, distance between the two: float)
-    matches:    list of tuples, each (ID: int, ID: int, distance between the two: float)
+    no_matches: 2D numpy array, each entry [cat1 ID: int, cat2 ID: int, distance between the two: float]
+    matches:    2D numpy array, each entry [cat1 ID: int, closest cat2 ID: int, distance between the two: float]
     """
-    tree = build_kd_tree(catalog2)
+    if len(catalog1) >= len(catalog2):
+        print("WARNING: catalog1 is larger than catalog2. Switching to searching catalog1 for NN's of catalog2.")
+        tree_catalog = catalog1
+        NN_catalog = catalog2
+    else:
+        tree_catalog = catalog2
+        NN_catalog = catalog1
+
+    tree = build_kd_tree(tree_catalog)
     matches = []
     no_matches = []
 
-    for star in catalog1:
+    for star in NN_catalog:
+
         match = find_closest_star(tree, star)
         dist = cm_tools.angular_dist(match[0], match[1], star[0], star[1])
-        if dist < max_dist:
-            matches.append((star[2], match[2], dist))
-        else:
-            no_matches.append((star[2], match[2]))
 
-    return matches, no_matches
+        if dist < max_dist:
+            matches.append([star[2], match[2], dist])
+        else:
+            no_matches.append([star[2], match[2], dist])
+
+    return np.array(matches), np.array(no_matches)

@@ -5,8 +5,9 @@ for star objects.
 import numpy as np
 import os.path
 
+##################################################################################
 
-def hms2dec(hours, minutes, seconds):
+def hms2deg(hours, minutes, seconds):
     """
     Takes in Right Ascension (astronomical coordinate) in hour, minute, second
     format and and converts to degrees.
@@ -17,10 +18,10 @@ def hms2dec(hours, minutes, seconds):
     Minutes: int
     Seconds: float
     """
-    return 15*(hours + minutes / 60.0 + seconds / (60.0**2))
+    return 15 * (hours + minutes / 60.0 + seconds / (60.0**2))
 
 
-def dms2dec(degrees, minutes, seconds):
+def dms2deg(degrees, minutes, seconds):
     """
     Takes in Declination (astronomical coordinate) in degree, minute, second
     format and and converts to degrees.
@@ -33,6 +34,8 @@ def dms2dec(degrees, minutes, seconds):
     """
     return np.sign(degrees) * (abs(degrees) + minutes / 60.0 + seconds / (60.0**2))
 
+
+##################################################################################
 
 def load_bss(path):
     """
@@ -55,8 +58,8 @@ def load_bss(path):
 
         for ID, line in enumerate(raw_data):
             row = np.zeros(3)
-            row[0] = np.radians(hms2dec(line[0], line[1], line[2]))
-            row[1] = np.radians(dms2dec(line[3], line[4], line[5]))
+            row[0] = np.radians(hms2deg(line[0], line[1], line[2]))
+            row[1] = np.radians(dms2deg(line[3], line[4], line[5]))
             row[2] = ID
             data[ID] = row
 
@@ -87,6 +90,7 @@ def load_cosmos(path):
 
     return data
 
+##################################################################################
 
 def angular_dist(ra_1, dec_1, ra_2, dec_2):
     """
@@ -95,7 +99,7 @@ def angular_dist(ra_1, dec_1, ra_2, dec_2):
     for distances between objects ON celestial sphere
     Return angular distance in radians
 
-    NOTE:     this is NOT the distance between objects in space, this is only the ANGULAR distance
+    NOTE:   this is NOT the distance between objects in space, this is only the ANGULAR distance
             between objects ON the celestial sphere
 
     Parameters

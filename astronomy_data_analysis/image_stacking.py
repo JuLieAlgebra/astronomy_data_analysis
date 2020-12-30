@@ -78,7 +78,7 @@ def scalable_median_fits(file_list, num_bins=5):
     Parameters
     ----------
     file_list: list of string fits filenames
-    num_bins: int
+    num_bins:  int
     """
     mean, std, left_bins, bins = median_histogram(file_list, num_bins)
     midpoint = (len(file_list) + 1) / 2 # we only want to count until we've reached the median value
@@ -102,16 +102,15 @@ def median_histogram(file_list, num_bins=5):
     Parameters
     ----------
     file_list: list of string fits filenames
-    num_bins: int
-
+    num_bins:  int
 
     Returns
     -------
-    mean:   2D numpy array with dimensions = input image. Mean image of all of the data.
-    std:    2D numpy array with dimensions = input image. Std of all of the data.
+    mean:      2D numpy array with dimensions = input image. Mean image of all of the data.
+    std:       2D numpy array with dimensions = input image. Std of all of the data.
     left_bins: 2D numpy array with dimensions = input image.
                Number of pixels who were more than 1 std from mean.
-    bins:   3D numpy array with dimensions = (input image shape, num_bins). Histogram.
+    bins:      3D numpy array with dimensions = (input image shape, num_bins). Histogram.
     """
     mean, std = scalable_stats_fits(file_list)
 
@@ -136,6 +135,13 @@ def median_histogram(file_list, num_bins=5):
         bin_index = np.array((data[in_range] - (minval[in_range])) / bin_width[in_range], dtype=int)
         bins[in_range, bin_index] += 1
     return mean, std, left_bins, bins
+
+
+def scalable_median_abs_dev(file_list):
+    """
+    Calculates the median absolute deviation, a more robust statistic than the median
+    """
+    pass
 
 
 def brightest_pixel(image):

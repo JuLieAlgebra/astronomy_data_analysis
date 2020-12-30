@@ -2,8 +2,8 @@
 # Custom
 ##################################################
 
-# Models
-*.npy
+# Ignoring my own test script
+test/
 
 # Media
 *.png
