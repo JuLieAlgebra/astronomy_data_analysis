@@ -1,9 +1,10 @@
 # astronomy-data-analysis
 A small library to work with astronomy catalogs and prepare fits image files for analysis.
 
-Sample fits files for image_stacking.py and smaller verions of both star catalogs for cross-matching can be found in the sample_data folder! Examples.ipynb will default to using the sample files.
+Sample fits files for image_stacking.py and smaller verions of both star catalogs for cross-matching can be found in the sample_data folder!
+Examples.ipynb will default to using the sample data folder.
 
-Open the test python script or ipython notebook to see examples of usage - no configuration required to run on Linux or Windows.
+Open the ipython notebook to see examples of usage - no configuration required to run on Linux or Windows.
 
 ## Libraries Used:
 *	astropy
@@ -19,14 +20,16 @@ For easy install of all necessary libraries:
 ## Data, Catalogs, and Background Info
 - Full superCOSMOS catalog data can be found [here](http://ssa.roe.ac.uk/allSky) under the Downloads heading in the first .gz file.
 - Full BSS catalog data can be found [here](http://cdsarc.u-strasbg.fr/viz-bin/Cat?J/MNRAS/384/775) under the FTP heading in table2.dat.
-- For more info on the equitorial coordinate system, see [this].(https://en.wikipedia.org/wiki/Right_ascension#/media/File:Ra_and_dec_on_celestial_sphere.png)
+- For more info on the Equatorial coordinate system used in astronomy, see [this](https://en.wikipedia.org/wiki/Right_ascension#/media/File:Ra_and_dec_on_celestial_sphere.png) and [this](https://en.wikipedia.org/wiki/Equatorial_coordinate_system).
 
 ## Why is this work relevant?
-For astronomy, there is an incredible amount of noise from everything you could imagine. From the limitations of our cameras to tiny flucations in the atmosphere. Our only way of interacting with our field of study is through images and simulations. Eliminating as much bias as possible and increasing the signal to noise ratio for our images is of the utmost importance. Small errors in the data can lead to centuries long condundrums as our physics based simulations consistently don't match observations. Determining whether our understanding of phyiscs is wrong or if we're getting bad data is a very hard thing. Currently, the [Hubble Constant condundrum](https://www.aps.org/publications/apsnews/201805/hubble.cfm) is a huge debate in the astronomy community - our measurements of the Hubble constant don't match. Is the way we infer distance in astronomy systematically under or over estimating distances? Do we not understand the evolution of the universe? Or are our predictions from the Standard Model flawed? Or something else?
+For astronomy, there is an incredible amount of noise from everything you could imagine. From the limitations of our cameras to tiny flucations in the atmosphere, our only way of interacting with our field of study is through images and simulations. Eliminating as much bias as possible and increasing the signal to noise ratio for our images is of the utmost importance.
+
+Small errors in the data can lead to centuries long condundrums as our physics based simulations consistently don't match observations. Determining whether our understanding of phyiscs is wrong or if we're getting bad data is a very hard thing. Currently, the [Hubble Constant condundrum](https://www.aps.org/publications/apsnews/201805/hubble.cfm) is a huge debate in the astronomy community - our measurements of the Hubble constant don't match. Is the way we infer distance in astronomy systematically under or over estimating distances? Do we not understand the evolution of the universe? Or are our predictions from the Standard Model flawed? Or something else?
 
 For those reasons, it is extremely important to ensure we have the best data processing methods possible. Like the majority of data science, most of an astronomer's time is spend processing data and ensuring statistically significant results.
 
-One of the most universal things in astronomy research is collecting all relevant observations of the objects we want to study. These observations will come from every manner of data sources, each with their own formating and, often times, file type. Integrating these large catalogs of data into one cohesive source or, almost harder, cross-matching observations in these catalogs with their counterparts in other catalogs can be quite challenging and certainly time intensive. It's very common to have catalogs of over one million rows, so even finding the matches of a small object catalog in a larger one can take an extraordinarily long time if done naively. Here, I explore an alternative algorithm to what the best astronomy libraries use.
+One of the most universal things in astronomy research is collecting all relevant observations of the objects we want to study. These observations will come from every manner of data sources, each with their own formatting and, oftentimes, file type. Integrating these large catalogs of data into one cohesive source or, almost harder, cross-matching observations in these catalogs with their counterparts in other catalogs can be quite challenging and certainly time intensive. It's very common to have catalogs of over one million rows, so even finding the matches of a small object catalog in a larger one can take an extraordinarily long time if done naively. Here, I explore an alternative algorithm to what the best astronomy libraries use.
 
 ## Notable Algorithms
 ### Cross matching
@@ -55,7 +58,7 @@ There is a LOT of data in astronomy. And there are a LOT of galaxies. The curren
 - There is subjectiveness in the classification
 - The features trained on are not the features used to classify the dataset (done by human eye).
 - Features trained on will be influenced by redshift (how far away a galaxy is), but the visual classification will not be. There is going to be a limit to classifying galaxies by color and the other features used.
-- TODO add references to the other papers using these features.
+- TODO add references to the other papers using these color and shape-based features for the curious.
 
 Misc TODO:
 - clean up examples.ipynb
