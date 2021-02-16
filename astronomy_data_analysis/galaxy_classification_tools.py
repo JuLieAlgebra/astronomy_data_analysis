@@ -12,8 +12,8 @@ def calculate_accuracy(predicted, actual):
     """
     Parameters
     ----------
-    predicted: numpy array
-    actual:    numpy array
+    predicted: 1D numpy array
+    actual:    1D numpy array
 
     Returns
     -------
@@ -35,8 +35,8 @@ def data_stats(data, by_class=True):
 
     Parameters
     ----------
-    data:
-    by_class:
+    data:     2D numpy array
+    by_class: boolean flag
 
     Returns
     -------
@@ -152,7 +152,6 @@ def plot_stats(xdata, stats, labels=None, xlabels=None, ylabel=None, title=None)
     elif ylabel is not None:
         plt.ylabel(ylabel)
         plt.title(title)
-
     fig.show()
 
 
