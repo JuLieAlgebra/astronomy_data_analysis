@@ -30,12 +30,13 @@ One of the most universal things in astronomy research is collecting all relevan
 *	astropy
 *	numpy
 *	scipy
+*   scikit-learn
 *	matplotlib
 *	os
 *	time
 
 For easy install of all necessary libraries:
-`pip install astropy numpy scipy matplotlib`
+`pip install astropy numpy scipy matplotlib scikit-learn`
 
 ##  Data, Catalogs, and Background Info <a name="paragraph1"></a>
 *	Full superCOSMOS catalog data can be found [here](http://ssa.roe.ac.uk/allSky) under the Downloads heading in the first .gz file.
@@ -73,6 +74,7 @@ There is a LOT of data in astronomy. And there are a LOT of galaxies. The curren
 - TODO add references to the other papers using these color and shape-based features for the curious.
 
 Misc TODO:
+- implement scalable_median_abs_dev in image_stacking
 - clean up examples.ipynb
 	- add more documentation to scalable algorithms section
 - think about how to store star catalogs

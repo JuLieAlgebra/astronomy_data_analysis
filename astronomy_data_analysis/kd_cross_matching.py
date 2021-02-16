@@ -121,7 +121,7 @@ def ra_dec_to_cartesian(catalog, r=1.0):
     return cartesian_catalog
 
 
-def crossmatch(catalog1, catalog2, max_dist):
+def crossmatch(catalog1, catalog2, tolerance):
     """
     Finds all of the matches of catalog1 in catalog2 with kd-tree nearest neighbor search by assuming that entries that are
     close spatially are the same object in both catalogs.
@@ -130,7 +130,7 @@ def crossmatch(catalog1, catalog2, max_dist):
     that convention is swapped.
 
     no_matches includes the ID of the star without a match, the closest object in catalog 2, and the distance
-    between them. Closest object found by the nearest neighbor search, which was not within max_dist.
+    between them. Closest object found by the nearest neighbor search, which was not within tolerance.
 
     matches includes the IDs of the two stars from each catalog and the distance between
     them.
@@ -138,7 +138,7 @@ def crossmatch(catalog1, catalog2, max_dist):
     Parameters
     ----------
     catalog 1, 2: 2D numpy arrays. See cross_matching_tools.load_bss, load_cosmos
-    max_dist:     float, tolerance for matching stars in radians
+    tolerance:     float, tolerance for matching stars in radians
 
 
     Returns
@@ -163,7 +163,7 @@ def crossmatch(catalog1, catalog2, max_dist):
         match = find_closest_star(tree, star)
         dist = cm_tools.angular_dist(match[0], match[1], star[0], star[1])
 
-        if dist < max_dist:
+        if dist < tolerance:
             matches.append([star[2], match[2], dist])
         else:
             no_matches.append([star[2], match[2], dist])

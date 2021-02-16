@@ -13,7 +13,7 @@ def generate_features_targets(data):
     """
     Parameters
     ----------
-    data:       2D numpy array
+    data:       numpy structured array (see numpy docs for details)
 
     Returns
     -------
