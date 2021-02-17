@@ -29,7 +29,7 @@ Sample fits files for image_stacking.py and smaller verions of both star catalog
 
 This notebook will default to using the sample data folder.
 
-### Libraries Used: <a name="subparagraph2"></a>
+### Libraries Used <a name="subparagraph2"></a>
 *	astropy
 *	numpy
 *	scipy
@@ -87,11 +87,11 @@ Median finding algorithms usually require loading the entire dataset into workin
 There is a LOT of data in astronomy. And there are a LOT of galaxies. The current classification system for galaxies is inherently a little bit arbitrary, since the line between two different galaxies just beginning to collide vs a merger galaxy (the result of colliding galaxies) is a continuous one. Similar problems at the boundary lines exist for the other categories as well. Here, we explore, clean, and analyze data from Galaxy Zoo for galaxy classification.
 
 - Expert feature selection credit goes to Dr. Tara Murphy of the University of Sydney.
-	- Features include:
-    	- color (correlated with galaxy distance and type)
-    	- eccentricity (shape)
-    	- adaptive moments (shape)
-    	- concentrations of light (also shape information)
+   - Features include:
+   - color (correlated with galaxy distance and type)
+   - eccentricity (shape)
+   - adaptive moments (shape)
+   - concentrations of light (also shape information)
 - Achieves 87% accuracy with 10-fold cross validation
 
 #### Discussion: What Challenges Remain? <a name="challenges"></a>
