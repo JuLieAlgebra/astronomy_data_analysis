@@ -5,7 +5,7 @@ for star objects.
 import numpy as np
 import os.path
 
-##################################################################################
+############################### UNIT CONVERSION FUNCTIONS ################################
 
 def hms2deg(hours, minutes, seconds):
     """
@@ -17,6 +17,10 @@ def hms2deg(hours, minutes, seconds):
     Hours:   int
     Minutes: int
     Seconds: float
+
+    Returns
+    -------
+    float
     """
     return 15 * (hours + minutes / 60.0 + seconds / (60.0**2))
 
@@ -31,11 +35,15 @@ def dms2deg(degrees, minutes, seconds):
     Degrees: int
     Minutes: int
     Seconds: float
+
+    Returns
+    -------
+    float
     """
     return np.sign(degrees) * (abs(degrees) + minutes / 60.0 + seconds / (60.0**2))
 
 
-##################################################################################
+############################## CATALOG HANDLING FUNCTIONS ##################################
 
 def load_bss(path):
     """
@@ -47,6 +55,10 @@ def load_bss(path):
     Parameters
     ----------
     path: string to where bss catalog is stored
+
+    Returns
+    -------
+    data: 2D numpy array
     """
     if os.path.isfile(path+'bss_catalog.npy'):
         data = np.load(path+'bss_catalog.npy')
@@ -78,6 +90,10 @@ def load_cosmos(path):
     Parameters
     ----------
     path: string to where bss catalog is stored
+
+    Returns
+    -------
+    data: 2D numpy array
     """
     if os.path.isfile(path+'superCOSMOS_catalog.npy'):
         data = np.load(path+'superCOSMOS_catalog.npy')
@@ -90,7 +106,7 @@ def load_cosmos(path):
 
     return data
 
-##################################################################################
+############################ DISTANCE METRIC ##################################
 
 def angular_dist(ra_1, dec_1, ra_2, dec_2):
     """
@@ -108,6 +124,10 @@ def angular_dist(ra_1, dec_1, ra_2, dec_2):
     dec_1:  float, radians
     ra_2:   float, radians
     dec_2:  float, radians
+
+    Returns
+    -------
+    float
     """
 
     radicand = np.sin(np.abs(dec_1 - dec_2) / 2.0)**2 + np.cos(dec_1) \

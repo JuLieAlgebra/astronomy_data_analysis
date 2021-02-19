@@ -9,14 +9,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 
+################# FILE HANDLING FUNCTIONS #####################
 
 def get_fits_data(filename):
     """
-    Returns image data (2D numpy array) of file
+    Returns image data (2D numpy array) of file.
 
     Parameters
     ----------
     filename: string of fits file name including path to object
+
+    Returns
+    -------
+    data: 2D numpy array
     """
     if filename[-5:] != '.fits':
         filename += filename + '.fits'
@@ -46,6 +51,10 @@ def get_data_stack(file_list):
     Parameters
     ----------
     file_list: list of strings of fits file names
+
+    Returns
+    -------
+    data_stack: 3D numpy array
     """
     data_slice_shape = np.shape(get_fits_data(file_list[0]))
     data_stack = np.zeros((len(file_list), data_slice_shape[0], data_slice_shape[1]))
@@ -56,7 +65,7 @@ def get_data_stack(file_list):
     return data_stack
 
 
-############ PLOTTING FUNCTIONS ##############
+################# PLOTTING FUNCTIONS #####################
 
 def plot(image, title=None):
     """
@@ -67,6 +76,9 @@ def plot(image, title=None):
     ----------
     image: 2D numpy array
     title: string, optional
+
+    Returns
+    -------
     """
     fig = plt.figure()
     ax = fig.add_axes()
@@ -134,8 +146,8 @@ def plot3D(cartesian_catalog, highlighted=None, title=None):
     ax.scatter(X, Y, Z, c=c)
 
     # TODO think about whether to add highlighted point option
-    #highlight_points = coor[:, :, :, np.int(highlighted.T)].T
-    #ax.scatter(highlight_points[0], highlight_points[1], highlight_points[2], c='r')
+    # highlight_points = coor[:, :, :, np.int(highlighted.T)].T
+    # ax.scatter(highlight_points[0], highlight_points[1], highlight_points[2], c='r')
 
     # Create cubic bounding box to simulate equal aspect ratio, thank you stackoverflow user
     max_range = np.array([X.max()-X.min(), Y.max()-Y.min(), Z.max()-Z.min()]).max()

@@ -6,7 +6,7 @@ import itertools
 from matplotlib import pyplot as plt
 
 
-################ Metrics Functions ############################################
+################ METRICS FUNCTIONS ############################################
 
 def calculate_accuracy(predicted, actual):
     """
@@ -23,7 +23,7 @@ def calculate_accuracy(predicted, actual):
     return accuracy
 
 
-################ Descriptive Statistics Functions ############################################
+################ DESCRIPTIVE STATISTICS FUNCTIONS #########################################
 
 def data_stats(data, by_class=True):
     """
@@ -40,8 +40,10 @@ def data_stats(data, by_class=True):
 
     Returns
     -------
-    class_std:  2D numpy array of shape (num_classes, num_features) so class_mean[0] gives class 0's stats for each feature
-    class_mean: 2D numpy array of shape (num_classes, num_features) so class_mean[0] gives class 0's stats for each feature
+    class_std:  2D numpy array of shape (num_classes, num_features) so class_mean[0] gives
+                class 0's stats for each feature
+    class_mean: 2D numpy array of shape (num_classes, num_features) so class_mean[0] gives
+                class 0's stats for each feature
     """
     if by_class:
 
@@ -70,8 +72,8 @@ def data_stats(data, by_class=True):
 
 def feature_stats(features, targets=None):
     """
-    If targets is provided, then will calculate the feature statistics by class instead of statistics of
-    all of the features.
+    If targets is provided, then will calculate the feature statistics by class instead of
+    statistics of all of the features.
 
     Parameters
     ----------
@@ -80,9 +82,8 @@ def feature_stats(features, targets=None):
 
     Returns
     -------
-    standard deviation: 2D or 1D numpy array. If targets is provided, then is 2D np array with std[0] corresponding
-                        to features statistics for class 0.
-
+    standard deviation: 2D or 1D numpy array. If targets is provided, then is 2D np array with
+                        std[0] corresponding to features statistics for class 0.
     mean:               Same as standard deviation.
     """
     if targets is not None:
@@ -109,7 +110,7 @@ def feature_stats(features, targets=None):
         return np.std(features, axis=0), np.mean(features, axis=0)
 
 
-################ Plotting Functions ############################################
+################ PLOTTING FUNCTIONS ############################################
 
 def plot_stats(xdata, stats, labels=None, xlabels=None, ylabel=None, title=None):
     """

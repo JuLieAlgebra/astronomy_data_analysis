@@ -18,6 +18,10 @@ def build_kd_tree(catalog, depth=0):
     ----------
     catalog: 2D numpy array. Ex: catalog[i] = [RA, DEC, ID]. See cross_matching_tools.load_bss, load_cosmos
     depth:   int, for recursion.
+
+    Returns
+    -------
+    Node of K-D tree (dictionary)
     """
     n = len(catalog)
 
@@ -42,10 +46,13 @@ def closer_star(root, s1, s2):
 
     Parameters
     ----------
-    Root: element of kd tree
-    s1:   element of kd tree
-    s1:   element of kd tree
+    Root: element of kd tree (dict)
+    s1:   element of kd tree (dict)
+    s1:   element of kd tree (dict)
 
+    Returns
+    -------
+    s1/s2: element of kd tree (dict)
     """
     if s1 is None:
         return s2
@@ -69,8 +76,12 @@ def find_closest_star(root, star, depth=0):
 
     Parameters
     ----------
-    Root: element of kd tree
-    Star: element of kd tree
+    Root: element of kd tree (dict)
+    Star: element of kd tree (dict)
+
+    Returns
+    -------
+    best: element of kd tree (dict)
     """
     if root is None:
         return None
@@ -107,6 +118,14 @@ def ra_dec_to_cartesian(catalog, r=1.0):
 
     Used for K-D Tree
 
+    Parameters
+    ----------
+    catalog: 2D numpy array
+    r:       float
+
+    Returns
+    -------
+    cartesian_catalog: 2D numpy array
     """
     shape = np.shape(catalog)
     cartesian_catalog = np.zeros((shape[0], shape[1] + 1))
@@ -139,7 +158,6 @@ def crossmatch(catalog1, catalog2, tolerance):
     ----------
     catalog 1, 2: 2D numpy arrays. See cross_matching_tools.load_bss, load_cosmos
     tolerance:     float, tolerance for matching stars in radians
-
 
     Returns
     -------

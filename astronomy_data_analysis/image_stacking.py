@@ -16,6 +16,10 @@ def mean_fits(data_stack):
     Parameters
     ----------
     data_stack: 3D numpy array of fits image data. See fits_tools.get_data_stack.
+
+    Returns
+    -------
+    2D numpy array
     """
     return np.mean(data_stack, axis=0)
 
@@ -28,6 +32,10 @@ def std_fits(data_stack):
     Parameters
     ----------
     data_stack: 3D numpy array of fits image data. See fits_tools.get_data_stack.
+
+    Returns
+    -------
+    2D numpy array
     """
     return np.std(data_stack, axis=0)
 
@@ -40,6 +48,10 @@ def median_fits(data_stack):
     Parameters
     ----------
     data_stack: 3D numpy array of fits image data. See fits_tools.get_data_stack.
+
+    Returns
+    -------
+    2D numpy array
     """
     return np.median(data_stack, axis=0)
 
@@ -55,6 +67,11 @@ def scalable_stats_fits(file_list):
     Parameters
     ----------
     file_list: list of string fits filenames
+
+    Returns
+    -------
+    mean: 2D numpy array
+    std:  2D numpy array
     """
     dim = fits_tools.get_fits_data(file_list[0]).shape
     hist = np.zeros(dim)
@@ -79,6 +96,10 @@ def scalable_median_fits(file_list, num_bins=5):
     ----------
     file_list: list of string fits filenames
     num_bins:  int
+
+    Returns
+    -------
+    median: 2D numpy array
     """
     mean, std, left_bins, bins = median_histogram(file_list, num_bins)
     midpoint = (len(file_list) + 1) / 2 # we only want to count until we've reached the median value
@@ -141,6 +162,7 @@ def scalable_median_abs_dev(file_list):
     """
     Calculates the median absolute deviation, a more robust statistic than the median
     """
+    # TODO
     pass
 
 
@@ -152,6 +174,10 @@ def brightest_pixel(image):
     Parameters
     ----------
     image: 2D numpy array or 3D numpy array of image data. See fits_tools.get_data_stack.
+
+    Returns
+    -------
+    location: 1D numpy array
     """
     # find the pixel with the brightest value in the image
     unraveled_location = np.argmax(np.array(image)) # argmax returns index in flattened version of array

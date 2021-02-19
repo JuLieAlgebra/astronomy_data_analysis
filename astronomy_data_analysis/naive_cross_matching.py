@@ -22,6 +22,11 @@ def find_closest(data, ra, dec):
     data: 2D numpy array of a star catalog. See cross_matching_tools.load_bss, load_cosmos.
     ra:   float, radians
     dec:  float, radians
+
+    Returns
+    -------
+    best_match:   int
+    closest_dist: float
     """
     best_match = -1
     closest_dist = np.inf

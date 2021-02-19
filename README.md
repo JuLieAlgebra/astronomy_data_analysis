@@ -1,4 +1,5 @@
 # astronomy-data-analysis
+See [here](https://veggiebaconator.github.io/astronomy_data_analysis/) for more visualization and in-depth discussion.
 # Table of contents
 1. [Introduction](#introduction)
     1. [Why is this work relevant?](#subparagraph1)
@@ -20,11 +21,11 @@ This notebook will default to using the sample data folder.
 ### Why is this work relevant? <a name="subparagraph1"></a>
 For astronomy, there is an incredible amount of noise from everything you could imagine. From the limitations of our cameras to tiny flucations in the atmosphere, our only way of interacting with our field of study is through images and simulations. Eliminating as much bias as possible and increasing the signal to noise ratio for our measurements is of the utmost importance.
 
-Small errors in the data can lead to centuries long condundrums as our physics based simulations consistently don't match observations. Determining whether our understanding of phyiscs is wrong or if we're getting bad data is a very hard thing. Currently, the [Hubble Constant condundrum](https://www.aps.org/publications/apsnews/201805/hubble.cfm) is a huge debate in the astronomy community - our measurements of the Hubble constant don't match. Is the way we infer distance in astronomy systematically under or over estimating distances? Do we not understand the evolution of the universe? Or are our predictions from the Standard Model flawed? Or something else?
+Small errors in the data can lead to centuries long condundrums as our physics based simulations consistently don't match observations. Determining whether our understanding of physics is wrong or if we're getting bad data is a very hard thing. Currently, the [Hubble Constant condundrum](https://www.aps.org/publications/apsnews/201805/hubble.cfm) is a huge debate in the astronomy community - our measurements of the Hubble constant don't match. Is the way we infer distance in astronomy systematically under or over estimating distances? Do we not understand the evolution of the universe? Or are our predictions from the Standard Model flawed? Or something else?
 
 For those reasons, it is extremely important to ensure we have the best data processing methods possible. Like the majority of data scientists, most of an astronomer's time is spend processing data and ensuring statistically significant results.
 
-One of the most universal things in astronomy research is collecting all relevant observations of the objects we want to study. These observations will come from every manner of data sources, each with their own formatting and, oftentimes, file type. Integrating these large catalogs of data into one cohesive source or, almost harder, cross-matching observations in these catalogs with their counterparts in other catalogs can be quite challenging and certainly time intensive. It's very common to have catalogs of over one million rows, so even finding the matches of a small object catalog in a larger one can take an extraordinarily long time if done naively.
+One of the most universal things in astronomy research is collecting all relevant observations of the objects we want to study. These observations will come from every manner of data sources, each with their own formatting and, oftentimes, file type. Integrating these large catalogs of data into one cohesive source or, almost harder, cross-matching observations in these catalogs with their counterparts in other catalogs can be quite challenging and certainly time intensive. It's very common to have catalogs of over one million rows, so even finding the matches of a small object catalog in a larger one can take an extraordinarily long time if done naively. This is one of the problems that I tackle in this library.
 
 ### Libraries Used: <a name="subparagraph2"></a>
 *	astropy
@@ -46,7 +47,7 @@ For more info on the Equatorial coordinate system, see [this](https://en.wikiped
 
 ## Notable Algorithms <a name="notablealgorithms"></a>
 ### Cross matching <a name="crossmatching"></a>
-It's harder than you might think to find the nearest neighbor for a point on a sphere. Most popular nearest neighbor algorithms rely on nice, flat Euclidean space and do not respect the "wrapping" of closed surfaces.
+It's trickier than you might think to find the nearest neighbor for a point on a sphere. Most popular nearest neighbor algorithms rely on nice, flat Euclidean space and do not respect the "wrapping" of closed surfaces.
 
 Here I use a two dimensional k-d tree to find nearest neighbors of catalog objects, with special modifications to account for the fact that our data lives on a sphere. More details are in examples.ipynb.
 
