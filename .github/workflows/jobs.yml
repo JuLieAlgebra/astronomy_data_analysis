@@ -1,0 +1,33 @@
+on:
+  push:
+    branches: [main]
+    paths: ['README.md']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Autogenerate TOC for README and generate examples.py from examples.ipynb
+      - uses: actions/checkout@v2
+      - run: |
+          curl https://raw.githubusercontent.com/ekalinin/github-markdown-toc/0.8.0/gh-md-toc -o gh-md-toc
+          chmod a+x gh-md-toc
+          ./gh-md-toc --insert --no-backup --hide-footer README.md
+          rm gh-md-toc
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Auto update markdown TOC
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pipenv
+          pipenv install --dev --deploy
+    - name: Test with pytest
+      run: |
+        pipenv run pytest --cov-report xml --cov-report term
+    - name: CodeClimate Coverage
+      uses: paambaati/codeclimate-action@v2.7.5
+      env:
+        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      with:
+        coverageLocations: ${{github.workspace}}/coverage.xml:coverage.py
