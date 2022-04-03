@@ -30,12 +30,14 @@ def build_kd_tree(catalog, depth=0):
 
     coord = depth % 2
 
-    sorted_data = catalog[catalog[:,coord].argsort()] # will sort numpy array by column instead of by axis
+    sorted_data = catalog[
+        catalog[:, coord].argsort()
+    ]  # will sort numpy array by column instead of by axis
 
     return {
-        'star': sorted_data[n // 2],
-        'left': build_kd_tree(sorted_data[:n // 2], depth + 1),
-        'right': build_kd_tree(sorted_data[n // 2 + 1:], depth + 1)
+        "star": sorted_data[n // 2],
+        "left": build_kd_tree(sorted_data[: n // 2], depth + 1),
+        "right": build_kd_tree(sorted_data[n // 2 + 1 :], depth + 1),
     }
 
 
@@ -91,20 +93,24 @@ def find_closest_star(root, star, depth=0):
     next_branch = None
     opposite_branch = None
 
-    if star[coord] < root['star'][coord]:
-        next_branch = root['left']
-        opposite_branch = root['right']
+    if star[coord] < root["star"][coord]:
+        next_branch = root["left"]
+        opposite_branch = root["right"]
 
     else:
-        next_branch = root['right']
-        opposite_branch = root['left']
+        next_branch = root["right"]
+        opposite_branch = root["left"]
 
-    best = closer_star(star, find_closest_star(next_branch, star, depth + 1), root['star'])
+    best = closer_star(
+        star, find_closest_star(next_branch, star, depth + 1), root["star"]
+    )
 
     best_distance = cm_tools.angular_dist(star[0], star[1], best[0], best[1])
 
-    if best_distance > (star[coord] - root['star'][coord]) ** 2:
-        best = closer_star(star, find_closest_star(opposite_branch, star, depth + 1), best)
+    if best_distance > (star[coord] - root["star"][coord]) ** 2:
+        best = closer_star(
+            star, find_closest_star(opposite_branch, star, depth + 1), best
+        )
 
     return best
 
@@ -165,7 +171,9 @@ def crossmatch(catalog1, catalog2, tolerance):
     matches:    2D numpy array, each entry [cat1 ID: int, closest cat2 ID: int, distance between the two: float]
     """
     if len(catalog1) >= len(catalog2):
-        print("WARNING: catalog1 is larger than catalog2. Switching to searching catalog1 for NN's of catalog2.")
+        print(
+            "WARNING: catalog1 is larger than catalog2. Switching to searching catalog1 for NN's of catalog2."
+        )
         tree_catalog = catalog1
         NN_catalog = catalog2
     else:

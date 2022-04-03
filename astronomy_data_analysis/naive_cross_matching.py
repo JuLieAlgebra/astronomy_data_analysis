@@ -70,9 +70,10 @@ def naive_crossmatch(bss, cosmos, max_dist):
     for bID, bstar in enumerate(bss):
         ID, dist = find_closest(cosmos, bstar[0], bstar[1])
         if dist < max_dist:
-            matches.append([bID, ID, dist])  # this matches the bss star ID to the closest cosmos star ID
+            matches.append(
+                [bID, ID, dist]
+            )  # this matches the bss star ID to the closest cosmos star ID
         else:
             no_matches.append([bID, ID, dist])
 
     return np.array(matches), np.array(no_matches)
-

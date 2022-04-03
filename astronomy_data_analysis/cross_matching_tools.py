@@ -7,7 +7,8 @@ import os.path
 
 ############################### UNIT CONVERSION FUNCTIONS ################################
 
-def hms2deg(hours, minutes, seconds):
+
+def hms2deg(hours: int, minutes: int, seconds: float) -> float:
     """
     Takes in Right Ascension (astronomical coordinate) in hour, minute, second
     format and and converts to degrees.
@@ -25,7 +26,7 @@ def hms2deg(hours, minutes, seconds):
     return 15 * (hours + minutes / 60.0 + seconds / (60.0**2))
 
 
-def dms2deg(degrees, minutes, seconds):
+def dms2deg(degrees: int, minutes: int, seconds: float) -> float:
     """
     Takes in Declination (astronomical coordinate) in degree, minute, second
     format and and converts to degrees.
@@ -45,7 +46,8 @@ def dms2deg(degrees, minutes, seconds):
 
 ############################## CATALOG HANDLING FUNCTIONS ##################################
 
-def load_bss(path):
+
+def load_bss(path: str) -> np.ndarray:
     """
     Reads in .dat file of the BSS catalog and returns numpy array of filtered data
     Data is a 2D np array of each object's location in RA, DEC
@@ -60,11 +62,11 @@ def load_bss(path):
     -------
     data: 2D numpy array
     """
-    if os.path.isfile(path+'bss_catalog.npy'):
-        data = np.load(path+'bss_catalog.npy')
+    if os.path.isfile(path + "bss_catalog.npy"):
+        data = np.load(path + "bss_catalog.npy")
 
     else:
-        raw_data = np.genfromtxt(path+'bss.dat', usecols=range(1, 7))
+        raw_data = np.genfromtxt(path + "bss.dat", usecols=range(1, 7))
         data_shape = (raw_data.shape[0], 3)
         data = np.zeros(data_shape)
 
@@ -75,12 +77,12 @@ def load_bss(path):
             row[2] = ID
             data[ID] = row
 
-        np.save(path+"bss_catalog", data)
+        np.save(path + "bss_catalog", data)
 
     return data
 
 
-def load_cosmos(path):
+def load_cosmos(path: str) -> np.ndarray:
     """
     Reads in .csv file of the Super COSMOS catalog and returns numpy array of filtered data
     Data is a 2D np array of each object's location in RA, DEC and its ID.
@@ -95,20 +97,24 @@ def load_cosmos(path):
     -------
     data: 2D numpy array
     """
-    if os.path.isfile(path+'superCOSMOS_catalog.npy'):
-        data = np.load(path+'superCOSMOS_catalog.npy')
+    if os.path.isfile(path + "superCOSMOS_catalog.npy"):
+        data = np.load(path + "superCOSMOS_catalog.npy")
 
     else:
-        raw_data = np.genfromtxt(path+'superCOSMOS.csv', delimiter=',', skip_header=1, usecols=[0, 1])
+        raw_data = np.genfromtxt(
+            path + "superCOSMOS.csv", delimiter=",", skip_header=1, usecols=[0, 1]
+        )
         data = np.column_stack((np.radians(raw_data), np.arange(len(raw_data))))
 
-        np.save(path+"superCOSMOS_catalog", data)
+        np.save(path + "superCOSMOS_catalog", data)
 
     return data
 
+
 ############################ DISTANCE METRIC ##################################
 
-def angular_dist(ra_1, dec_1, ra_2, dec_2):
+
+def angular_dist(ra_1: float, dec_1: float, ra_2: float, dec_2: float) -> float:
     """
     Takes in RA and DEC of two objects in radians
     Computes Haversine Formula  ( https://en.wikipedia.org/wiki/Haversine_formula )
@@ -130,8 +136,9 @@ def angular_dist(ra_1, dec_1, ra_2, dec_2):
     float
     """
 
-    radicand = np.sin(np.abs(dec_1 - dec_2) / 2.0)**2 + np.cos(dec_1) \
-             * np.cos(dec_2) * np.sin(np.abs(ra_1 - ra_2) / 2.0)**2
+    radicand = (
+        np.sin(np.abs(dec_1 - dec_2) / 2.0) ** 2
+        + np.cos(dec_1) * np.cos(dec_2) * np.sin(np.abs(ra_1 - ra_2) / 2.0) ** 2
+    )
 
     return 2 * np.arcsin(np.sqrt(radicand))
-

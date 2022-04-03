@@ -3,7 +3,7 @@
 ##################################################
 
 # Ignoring my own test script
-test/
+tests/test.py
 
 # Media
 *.png

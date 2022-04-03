@@ -2,13 +2,16 @@
 Some functions used for image stacking - including scalable mean and median algorithms
 for large data sets.
 """
+from typing import Tuple, List
+
 import numpy as np
 from astropy.io import fits
-from . import fits_tools
 import matplotlib.pyplot as plt
 
+from . import fits_tools
 
-def mean_fits(data_stack):
+
+def mean_fits(data_stack: np.ndarray) -> np.ndarray:
     """
     Returns the mean value across the same element in each fits files.
     Return has the same shape as one image in data_stack.
@@ -24,7 +27,7 @@ def mean_fits(data_stack):
     return np.mean(data_stack, axis=0)
 
 
-def std_fits(data_stack):
+def std_fits(data_stack: np.ndarray) -> np.ndarray:
     """
     Returns the std value across the same element in each fits files.
     Return has the same shape as one image in data_stack.
@@ -40,7 +43,7 @@ def std_fits(data_stack):
     return np.std(data_stack, axis=0)
 
 
-def median_fits(data_stack):
+def median_fits(data_stack: np.ndarray) -> np.ndarray:
     """
     Returns the median value across the same element in each fits files.
     Return has the same shape as one image in data_stack.
@@ -56,7 +59,7 @@ def median_fits(data_stack):
     return np.median(data_stack, axis=0)
 
 
-def scalable_stats_fits(file_list):
+def scalable_stats_fits(file_list: List[str]) -> Tuple[np.ndarray, np.ndarray]:
     """
     A naive mean, standard deviation function that only needs to load one image into memory at a time.
 
@@ -87,7 +90,7 @@ def scalable_stats_fits(file_list):
     return mean, std
 
 
-def scalable_median_fits(file_list, num_bins=5):
+def scalable_median_fits(file_list: List[str], num_bins: int = 5) -> np.ndarray:
     """
     Implements numpythonic binapprox algorithm, which runs in O(number of images).
     For more details: http://www.stat.cmu.edu/~ryantibs/median/
@@ -102,20 +105,28 @@ def scalable_median_fits(file_list, num_bins=5):
     median: 2D numpy array
     """
     mean, std, left_bins, bins = median_histogram(file_list, num_bins)
-    midpoint = (len(file_list) + 1) / 2 # we only want to count until we've reached the median value
+    midpoint = (
+        len(file_list) + 1
+    ) / 2  # we only want to count until we've reached the median value
 
     bin_width = 2 * std / num_bins
 
     # All the heavy duty lifting happens in these two lines!
-    cumsumm = np.cumsum(np.dstack((left_bins, bins)), axis=2) # we want to integrate our histogram until we reach the median value
-    b = np.argmax(cumsumm >= midpoint, axis=2) - 1 # argmax returns the first instance of true it finds
+    cumsumm = np.cumsum(
+        np.dstack((left_bins, bins)), axis=2
+    )  # we want to integrate our histogram until we reach the median value
+    b = (
+        np.argmax(cumsumm >= midpoint, axis=2) - 1
+    )  # argmax returns the first instance of true it finds
 
     # once we've found the bins in the histograms with the median values in it, compute median
-    median = mean - std + bin_width*(b + 0.5)
+    median = mean - std + bin_width * (b + 0.5)
     return median
 
 
-def median_histogram(file_list, num_bins=5):
+def median_histogram(
+    file_list: List[str], num_bins: int = 5
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """
     Constructs the histogram for scalable_median_fits. End result will have a histogram for
     each "pixel" of the fits image.
@@ -140,20 +151,24 @@ def median_histogram(file_list, num_bins=5):
     bin_width = 2 * std / num_bins
 
     image_dim = fits_tools.get_fits_data(file_list[0]).shape
-    bins = np.zeros((image_dim[0], image_dim[1], num_bins)) # , dtype=int TODO think about this
+    bins = np.zeros(
+        (image_dim[0], image_dim[1], num_bins)
+    )  # , dtype=int TODO think about this
     # we are going to count the number of times we see a value less than mean - std.
     left_bins = np.zeros(image_dim)
 
     for i, file in enumerate(file_list):
         data = fits_tools.get_fits_data(file)
 
-        low_values = (data < minval)
-        left_bins[low_values] +=1
+        low_values = data < minval
+        left_bins[low_values] += 1
 
         in_range = (data >= minval) & (data < maxval)
         bin_val = (data - minval) / bin_width
 
-        bin_index = np.array((data[in_range] - (minval[in_range])) / bin_width[in_range], dtype=int)
+        bin_index = np.array(
+            (data[in_range] - (minval[in_range])) / bin_width[in_range], dtype=int
+        )
         bins[in_range, bin_index] += 1
     return mean, std, left_bins, bins
 
@@ -166,7 +181,7 @@ def scalable_median_abs_dev(file_list):
     pass
 
 
-def brightest_pixel(image):
+def brightest_pixel(image: np.ndarray) -> np.array:
     """
     Takes data stack of fits image data.
     Returns the pixel (array like) value where the image is brightest.
@@ -180,7 +195,11 @@ def brightest_pixel(image):
     location: 1D numpy array
     """
     # find the pixel with the brightest value in the image
-    unraveled_location = np.argmax(np.array(image)) # argmax returns index in flattened version of array
-    location = np.unravel_index(unraveled_location, np.shape(image)) # get back our location in our 2D image
+    unraveled_location = np.argmax(
+        np.array(image)
+    )  # argmax returns index in flattened version of array
+    location = np.unravel_index(
+        unraveled_location, np.shape(image)
+    )  # get back our location in our 2D image
 
     return location

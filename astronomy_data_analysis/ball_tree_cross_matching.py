@@ -1,12 +1,13 @@
 """
 stump for implementing and benchmarking sklearn's ball tree class with Haversine distance metric
 """
-#from . import cross_matching_tools as cm_tools
+# from . import cross_matching_tools as cm_tools
 import sklearn.neighbors
 import numpy as np
 import os
 
 ####################### Borrowed from cm_tools while in Dev. ################################
+
 
 def hms2deg(hours, minutes, seconds):
     """
@@ -47,7 +48,7 @@ def load_bss(path):
     ----------
     path: string to where bss catalog is stored
     """
-    raw_data = np.genfromtxt(path+'bss.dat', usecols=range(1, 7))
+    raw_data = np.genfromtxt(path + "bss.dat", usecols=range(1, 7))
     data_shape = (raw_data.shape[0], 2)
     data = np.zeros(data_shape)
     for ID, line in enumerate(raw_data):
@@ -69,7 +70,9 @@ def load_cosmos(path):
     ----------
     path: string to where bss catalog is stored
     """
-    raw_data = np.genfromtxt(path+'superCOSMOS.csv', delimiter=',', skip_header=1, usecols=[0, 1])
+    raw_data = np.genfromtxt(
+        path + "superCOSMOS.csv", delimiter=",", skip_header=1, usecols=[0, 1]
+    )
     data = np.radians(raw_data)
     data = data.reshape((raw_data.shape[0], raw_data.shape[1]))
 
@@ -80,15 +83,14 @@ def load_cosmos(path):
 
 
 def build_ball_tree(data, leaf_size=2):
-    """
-    """
-    dist = sklearn.neighbors.DistanceMetric.get_metric('haversine')
+    """ """
+    dist = sklearn.neighbors.DistanceMetric.get_metric("haversine")
     tree = sklearn.neighbors.BallTree(data, leaf_size=leaf_size, metric=dist)
 
     return tree
 
 
-def cross_match(catalog1, catalog2, tolerance=np.radians(5/3600)):
+def cross_match(catalog1, catalog2, tolerance=np.radians(5 / 3600)):
     """
     Finds all of the matches of catalog1 in catalog2 with ball tree nearest neighbor search by assuming that entries that are
     close spatially are the same object in both catalogs.
@@ -107,14 +109,15 @@ def cross_match(catalog1, catalog2, tolerance=np.radians(5/3600)):
     catalog 1, 2: 2D numpy arrays. See cross_matching_tools.load_bss, load_cosmos
     tolerance:    float, tolerance for matching stars in radians
 
-
     Returns
     -------
     no_matches: 2D numpy array, each entry [cat1 ID: int, cat2 ID: int, distance between the two: float]
     matches:    2D numpy array, each entry [cat1 ID: int, closest cat2 ID: int, distance between the two: float]
     """
     if len(catalog1) >= len(catalog2):
-        print("WARNING: catalog1 is larger than catalog2. Switching to searching catalog1 for NN's of catalog2.")
+        print(
+            "WARNING: catalog1 is larger than catalog2. Switching to searching catalog1 for NN's of catalog2."
+        )
         tree_catalog = catalog1
         NN_catalog = catalog2
     else:
@@ -122,26 +125,30 @@ def cross_match(catalog1, catalog2, tolerance=np.radians(5/3600)):
         NN_catalog = catalog1
 
     tree = build_ball_tree(tree_catalog)
-    initial_results = tree.query_radius(NN_catalog, r=tolerance, return_distance=True, sort_results=True)
+    initial_results = tree.query(NN_catalog, return_distance=True, sort_results=True)
+    results = np.column_stack((initial_results[1], initial_results[0]))
 
-    """
-    # In the middle of separating out matches and no matches from intial_results
     matches = []
     no_matches = []
-    for dist, match in initial_results:
-        print(dist, match)
+    for match, dist in results:
         if dist <= tolerance:
             matches.append((match, dist))
         else:
             no_matches.append((match, dist))
 
     return np.array(matches), np.array(no_matches)
-    """
-    return initial_results
+
 
 # hard coded path for initial sanity checking
 path = "/home/bacon/code/python_toys/astronomy_data_analysis/sample_data/star_catalogs/"
 bss_cat = load_bss(path)
 cosmos_cat = load_cosmos(path)
-matches = cross_match(bss_cat, cosmos_cat, tolerance=np.radians(5/3600))
-print(matches)
+matches, no_matches = cross_match(bss_cat, cosmos_cat, tolerance=np.radians(5 / 3600))
+
+# Index of ball tree results is the index of the closest neighbor in the tree
+for match in matches:
+    print("Index {0}, distance {1}".format(int(match[0]), np.round(match[1], 6)))
+print("=========================================================================")
+print("         NO MATCHES             ")
+for n_match in no_matches:
+    print("Index {0}, distance {1}".format(int(n_match[0]), np.round(n_match[1], 6)))

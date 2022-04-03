@@ -4,6 +4,7 @@ data file type in astronomy.
 
 Fits files include a lot of data, including an image and header file.
 """
+from typing import List
 from astropy.io import fits
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,7 +12,8 @@ from mpl_toolkits import mplot3d
 
 ################# FILE HANDLING FUNCTIONS #####################
 
-def get_fits_data(filename):
+
+def get_fits_data(filename: str) -> np.ndarray:
     """
     Returns image data (2D numpy array) of file.
 
@@ -23,8 +25,8 @@ def get_fits_data(filename):
     -------
     data: 2D numpy array
     """
-    if filename[-5:] != '.fits':
-        filename += filename + '.fits'
+    if filename[-5:] != ".fits":
+        filename += filename + ".fits"
 
     # opening file and extracting data
     hdulist = fits.open(filename)
@@ -34,7 +36,7 @@ def get_fits_data(filename):
     return data
 
 
-def get_data_stack(file_list):
+def get_data_stack(file_list: List[str]) -> np.ndarray:
     """
     Takes in list of fits files
     Each fits file must have image of the same shape
@@ -60,14 +62,15 @@ def get_data_stack(file_list):
     data_stack = np.zeros((len(file_list), data_slice_shape[0], data_slice_shape[1]))
 
     for index, file in enumerate(file_list):
-         data_stack[index] = get_fits_data(file)
+        data_stack[index] = get_fits_data(file)
 
     return data_stack
 
 
 ################# PLOTTING FUNCTIONS #####################
 
-def plot(image, title=None):
+
+def plot(image: np.ndarray, title=None) -> None:
     """
     Plots data of fits file.
     User must pass in data of fits image (hdulist[0].data)
@@ -83,15 +86,17 @@ def plot(image, title=None):
     fig = plt.figure()
     ax = fig.add_axes()
     plt.imshow(image.T, cmap=plt.cm.viridis)
-    plt.xlabel('x-pixels (RA)')
-    plt.ylabel('y-pixels (Dec)')
+    plt.xlabel("x-pixels (RA)")
+    plt.ylabel("y-pixels (Dec)")
     plt.colorbar()
     if title is not None:
-         plt.title(title)
+        plt.title(title)
     fig.show()
 
 
-def plot_images(data_stack, title='', ncols=4, subtitles=None):
+def plot_images(
+    data_stack: np.ndarray, title: str = "", ncols: int = 4, subtitles: List[str] = None
+) -> None:
     """
     Takes in a data stack. See fits_tools.get_data_stack.
     Plots all fits data in same figure.
@@ -105,7 +110,9 @@ def plot_images(data_stack, title='', ncols=4, subtitles=None):
 
     TODO: Make nicer.
     """
-    nrows = data_stack.shape[0] // ncols + (data_stack.shape[0] % ncols) # array of sub-plots
+    nrows = data_stack.shape[0] // ncols + (
+        data_stack.shape[0] % ncols
+    )  # array of sub-plots
     figsize = [6, 8]
     fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize)
 
@@ -123,7 +130,9 @@ def plot_images(data_stack, title='', ncols=4, subtitles=None):
     plt.show()
 
 
-def plot3D(cartesian_catalog, highlighted=None, title=None):
+def plot3D(
+    cartesian_catalog: np.ndarray, highlighted: np.array = None, title: str = None
+) -> None:
     """
     Takes in numpy array of star coordinates - must be what kd_cross_matching.ra_dec_to_cartesian
     returns.
@@ -137,7 +146,7 @@ def plot3D(cartesian_catalog, highlighted=None, title=None):
     """
     coor = cartesian_catalog
     fig = plt.figure()
-    ax = plt.axes(projection='3d')
+    ax = plt.axes(projection="3d")
 
     X = coor.T[0]
     Y = coor.T[1]
@@ -150,13 +159,21 @@ def plot3D(cartesian_catalog, highlighted=None, title=None):
     # ax.scatter(highlight_points[0], highlight_points[1], highlight_points[2], c='r')
 
     # Create cubic bounding box to simulate equal aspect ratio, thank you stackoverflow user
-    max_range = np.array([X.max()-X.min(), Y.max()-Y.min(), Z.max()-Z.min()]).max()
-    Xb = 0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][0].flatten() + 0.5*(X.max()+X.min())
-    Yb = 0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][1].flatten() + 0.5*(Y.max()+Y.min())
-    Zb = 0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][2].flatten() + 0.5*(Z.max()+Z.min())
+    max_range = np.array(
+        [X.max() - X.min(), Y.max() - Y.min(), Z.max() - Z.min()]
+    ).max()
+    Xb = 0.5 * max_range * np.mgrid[-1:2:2, -1:2:2, -1:2:2][0].flatten() + 0.5 * (
+        X.max() + X.min()
+    )
+    Yb = 0.5 * max_range * np.mgrid[-1:2:2, -1:2:2, -1:2:2][1].flatten() + 0.5 * (
+        Y.max() + Y.min()
+    )
+    Zb = 0.5 * max_range * np.mgrid[-1:2:2, -1:2:2, -1:2:2][2].flatten() + 0.5 * (
+        Z.max() + Z.min()
+    )
 
     for xb, yb, zb in zip(Xb, Yb, Zb):
-        ax.plot([xb], [yb], [zb], 'w')
+        ax.plot([xb], [yb], [zb], "w")
 
     plt.grid()
     ax.set_title(title)
